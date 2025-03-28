@@ -1,3 +1,8 @@
+# 틱택토 게임
+# Copyright (C) 2025 Sujin Yoon
+# Licensed under the MIT License.
+# Contact : sujin@gmail.com
+
 import random
 
 # 3x3 크기의 빈 보드 생성
