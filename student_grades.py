@@ -51,17 +51,12 @@ def print_results(students):  # 결과 출력
         )
 
 
-def main():
-    students = []
-    for _ in range(5):
-        student_id, name, scores = get_student_info()
-        total, average, grade = calculate_score(scores)
-        scores.update({"총점": total, "평균": average, "학점": grade})
-        students.append((student_id, name, scores))
+students = []
+for _ in range(5):
+    student_id, name, scores = get_student_info()
+    total, average, grade = calculate_score(scores)
+    scores.update({"총점": total, "평균": average, "학점": grade})
+    students.append((student_id, name, scores))
 
-    calculate_ranks(students)
-    print_results(students)
-
-
-if __name__ == "__main__":
-    main()
+calculate_ranks(students)
+print_results(students)
