@@ -1,4 +1,4 @@
-# 성적 관리 프로그램
+# 성적 계산 프로그램
 # Copyright (C) 2025 Sujin Yoon
 # Licensed under the MIT License.
 # Contact : sujin@gmail.com
