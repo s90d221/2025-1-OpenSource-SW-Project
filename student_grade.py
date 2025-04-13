@@ -1,9 +1,13 @@
-# 성적 계산 프로그램
+##################
+# 프로그램명: Grade Calculation Program
+# 작성자: 소프트웨어학부 / 윤수진
+# 작성일: 2025-03-23
+# 프로그램 설명: 이 프로그램은 학생들의 학번, 이름, 과목별 점수를 입력받고, 총점, 평균, 학점을 계산하여 
+# 학생들의 등수를 매긴 후 결과를 출력하는 성적 관리 프로그램입니다.
 # Copyright (C) 2025 Sujin Yoon
-# Licensed under the MIT License.
 # Contact : sujin@gmail.com
+##################
 
-# -*- coding: utf-8 -*-
 def get_student_info():  # 학생 정보 입력
     student_id = input("학번: ")
     name = input("학생 이름: ")
