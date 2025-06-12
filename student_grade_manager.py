@@ -32,7 +32,7 @@ class GradeManager:
             total INT,
             average FLOAT,
             grade VARCHAR(2),
-            rank INT
+            `rank` INT
         )
         """)
 
@@ -73,11 +73,11 @@ class GradeManager:
         self.cursor.execute("SELECT student_id, total FROM students ORDER BY total DESC")
         students = self.cursor.fetchall()
         for i, (student_id, _) in enumerate(students, start=1):
-            self.cursor.execute("UPDATE students SET rank = %s WHERE student_id = %s", (i, student_id))
+            self.cursor.execute("UPDATE students SET `rank` = %s WHERE student_id = %s", (i, student_id))
         self.conn.commit()
 
     def print_students(self):
-        self.cursor.execute("SELECT student_id, name, eng, c_lang, python_score, total, average, grade, rank FROM students ORDER BY total DESC")
+        self.cursor.execute("SELECT student_id, name, eng, c_lang, python_score, total, average, grade, `rank` FROM students ORDER BY total DESC")
         students = self.cursor.fetchall()
         print("\n                              성적관리 프로그램")
         print("=" * 100)
@@ -99,7 +99,7 @@ class GradeManager:
     def search_by_id(self):
         student_id = input("검색할 학생의 학번을 입력하세요: ")
         self.cursor.execute("""
-            SELECT student_id, name, eng, c_lang, python_score, total, average, grade, rank 
+            SELECT student_id, name, eng, c_lang, python_score, total, average, grade, `rank` 
             FROM students WHERE student_id = %s
         """, (student_id,))
         student = self.cursor.fetchone()
@@ -111,7 +111,7 @@ class GradeManager:
     def search_by_name(self):
         name = input("검색할 학생의 이름을 입력하세요: ")
         self.cursor.execute("""
-            SELECT student_id, name, eng, c_lang, python_score, total, average, grade, rank 
+            SELECT student_id, name, eng, c_lang, python_score, total, average, grade, `rank` 
             FROM students WHERE name = %s
         """, (name,))
         students = self.cursor.fetchall()
