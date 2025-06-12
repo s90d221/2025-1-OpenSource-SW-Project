@@ -19,6 +19,22 @@ class GradeManager:
             database="student_db"
         )
         self.cursor = self.conn.cursor()
+        self.create_table()
+
+    def create_table(self):
+        self.cursor.execute("""
+        CREATE TABLE IF NOT EXISTS students (
+            student_id VARCHAR(20) PRIMARY KEY,
+            name VARCHAR(20),
+            eng INT,
+            c_lang INT,
+            python_score INT,
+            total INT,
+            average FLOAT,
+            grade VARCHAR(2),
+            rank INT
+        )
+        """)
 
     def input_student(self):
         student_id = input("학번: ")
@@ -36,6 +52,7 @@ class GradeManager:
         """
         self.cursor.execute(sql, (student_id, name, eng, c_lang, python_score, total, average, grade))
         self.conn.commit()
+        self.update_ranks()
         print("학생 정보가 성공적으로 저장되었습니다.")
 
     def get_grade(self, avg):
@@ -52,28 +69,39 @@ class GradeManager:
         else:
             return "F"
 
+    def update_ranks(self):
+        self.cursor.execute("SELECT student_id, total FROM students ORDER BY total DESC")
+        students = self.cursor.fetchall()
+        for i, (student_id, _) in enumerate(students, start=1):
+            self.cursor.execute("UPDATE students SET rank = %s WHERE student_id = %s", (i, student_id))
+        self.conn.commit()
+
     def print_students(self):
-        self.cursor.execute("SELECT * FROM students ORDER BY total DESC")
+        self.cursor.execute("SELECT student_id, name, eng, c_lang, python_score, total, average, grade, rank FROM students ORDER BY total DESC")
         students = self.cursor.fetchall()
         print("\n                              성적관리 프로그램")
         print("=" * 100)
-        print(f"{'학번':<13}{'이름':<10}{'영어':<8}{'C-언어':<8}{'파이썬':<8}{'총점':<8}{'평균':<8}{'학점':<8}")
+        print(f"{'학번':<13}{'이름':<10}{'영어':<8}{'C-언어':<8}{'파이썬':<8}{'총점':<8}{'평균':<8}{'학점':<8}{'등수':<8}")
         print("=" * 100)
         for row in students:
-            print(f"{row[0]:<13}{row[1]:<10}{row[2]:<8}{row[3]:<8}{row[4]:<8}{row[5]:<8}{row[6]:<8.2f}{row[7]:<8}")
+            print(f"{row[0]:<13}{row[1]:<10}{row[2]:<8}{row[3]:<8}{row[4]:<8}{row[5]:<8}{row[6]:<8.2f}{row[7]:<8}{row[8]:<8}")
 
     def delete_student(self):
         student_id = input("삭제할 학생의 학번을 입력하세요: ")
         self.cursor.execute("DELETE FROM students WHERE student_id = %s", (student_id,))
         self.conn.commit()
         if self.cursor.rowcount > 0:
+            self.update_ranks()
             print(f"학번 {student_id}의 학생이 삭제되었습니다.")
         else:
             print("해당 학번의 학생을 찾을 수 없습니다.")
 
     def search_by_id(self):
         student_id = input("검색할 학생의 학번을 입력하세요: ")
-        self.cursor.execute("SELECT * FROM students WHERE student_id = %s", (student_id,))
+        self.cursor.execute("""
+            SELECT student_id, name, eng, c_lang, python_score, total, average, grade, rank 
+            FROM students WHERE student_id = %s
+        """, (student_id,))
         student = self.cursor.fetchone()
         if student:
             print(student)
@@ -82,7 +110,10 @@ class GradeManager:
 
     def search_by_name(self):
         name = input("검색할 학생의 이름을 입력하세요: ")
-        self.cursor.execute("SELECT * FROM students WHERE name = %s", (name,))
+        self.cursor.execute("""
+            SELECT student_id, name, eng, c_lang, python_score, total, average, grade, rank 
+            FROM students WHERE name = %s
+        """, (name,))
         students = self.cursor.fetchall()
         if students:
             for student in students:
@@ -103,7 +134,6 @@ class GradeManager:
 def main():
     manager = GradeManager()
 
-    # 최초 5명 입력
     for _ in range(5):
         manager.input_student()
 
@@ -135,6 +165,7 @@ def main():
             break
         else:
             print("잘못된 선택입니다. 다시 시도하세요.")
+
 
 if __name__ == "__main__":
     main()
